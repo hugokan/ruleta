@@ -3,15 +3,14 @@
   font-family: Arial, sans-serif;
   padding: 20px;
   color: #ff5733;
-
 }
 .color-text{
   color: #e0e3e2 !important;
 }
 .ruleta-container {
   position: relative;
-  width: 300px;
-  height: 300px;
+  width: 350px;
+  height: 350px;
   margin: auto;
   border-radius: 50%;
   overflow: hidden;
@@ -69,7 +68,7 @@
 }
 .letter {
   display: inline-block;
-  width: 30px;
+  width: 40px;
   text-align: center;
   animation: slotSpin 0.5s ease-in-out;
 }
@@ -79,7 +78,7 @@
 }
 
 .button-group {
-  margin-top: 20px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
   align-items: center;

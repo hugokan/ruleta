@@ -1,7 +1,16 @@
 <div class="container">
   <br>
   <h1 class="color-text"><b>Ruleta aleatoria</b></h1>
-  <br><br>
+
+  <mat-card *ngIf="nombreSeleccionado()" class="resultado">
+    <mat-card-title>Nombre Seleccionado:</mat-card-title>
+    <mat-card-content class="slot-machine">
+      <span *ngFor="let letra of nombreAnimado()" class="letter">{{ letra }}</span>
+    </mat-card-content>
+  </mat-card>
+
+  <br>
+
   <mat-card>
     <br>
     <div class="flex-container">
@@ -23,10 +32,10 @@
   </div>
 
   <div class="flex-item right-column">
-    <h2>Participantes</h2>
+    <h2>Participantes:</h2>
     <div *ngIf="nombres().length > 0; else noNames">
       <mat-list>
-        <mat-list-item class="color-text" *ngFor="let name of nombres()"><h4>{{ name }}</h4></mat-list-item>
+        <mat-list-item class="color-text" *ngFor="let name of nombres()"><h6>{{ name }}</h6></mat-list-item>
       </mat-list>
     </div>
 
@@ -40,24 +49,17 @@
     <br>
   </mat-card>
 
-  <br><br>
-  <mat-card *ngIf="nombreSeleccionado()" class="resultado">
-    <mat-card-title>Nombre Seleccionado:</mat-card-title>
-    <mat-card-content class="slot-machine">
-      <span *ngFor="let letra of nombreAnimado()" class="letter">{{ letra }}</span>
-    </mat-card-content>
-  </mat-card>
-  <br><br>
+  <br>
 
   <mat-card>
     <mat-table [dataSource]="historial()" class="historial">
       <ng-container matColumnDef="nombre">
-        <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
-        <mat-cell *matCellDef="let item"> {{ item.nombre }} </mat-cell>
+        <mat-header-cell *matHeaderCellDef><h5><b>Nombre</b></h5></mat-header-cell>
+        <mat-cell *matCellDef="let item"><h6>{{ item.nombre }}</h6></mat-cell>
       </ng-container>
       <ng-container matColumnDef="fecha">
-        <mat-header-cell *matHeaderCellDef> Fecha </mat-header-cell>
-        <mat-cell *matCellDef="let item"> {{ item.fecha }} </mat-cell>
+        <mat-header-cell *matHeaderCellDef><h5><b>Fecha</b></h5></mat-header-cell>
+        <mat-cell *matCellDef="let item"><h6>{{ item.fecha }}</h6></mat-cell>
       </ng-container>
       <mat-header-row *matHeaderRowDef="['nombre', 'fecha']"></mat-header-row>
       <mat-row *matRowDef="let row; columns: ['nombre', 'fecha']"></mat-row>
