@@ -165,7 +165,7 @@ this.obtenerNombres();
     if (!nuevoRegistro) return;
 
     this.http.post(this.apiHistorialUrl, nuevoRegistro).subscribe(
-      response => console.log('Registro guardado:', response),
+      response => console.log('Registro guardado:'),
       error => console.error('Error al guardar:', error)
     );
   }

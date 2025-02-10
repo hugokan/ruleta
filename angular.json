@@ -16,6 +16,7 @@
             "outputPath": "dist/ruleta",
             "index": "src/index.html",
             "browser": "src/main.ts",
+            "baseHref": "/ruleta/",
             "polyfills": [
               "zone.js"
             ],
