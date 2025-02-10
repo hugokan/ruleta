@@ -1,6 +1,6 @@
 <div class="container">
   <br>
-  <h1 class="color-text"><b>Ruleta para reuniones</b></h1>
+  <h1 class="color-text"><b>Ruleta aleatoria</b></h1>
   <br><br>
   <mat-card>
     <br>
@@ -26,7 +26,7 @@
     <h2>Participantes</h2>
     <div *ngIf="nombres().length > 0; else noNames">
       <mat-list>
-        <mat-list-item class="color-text" *ngFor="let name of nombres()">{{ name }}</mat-list-item>
+        <mat-list-item class="color-text" *ngFor="let name of nombres()"><h4>{{ name }}</h4></mat-list-item>
       </mat-list>
     </div>
 
