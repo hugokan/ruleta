@@ -1,0 +1,68 @@
+<div class="container">
+  <br>
+  <h1 class="color-text"><b>Ruleta para reuniones</b></h1>
+  <br><br>
+  <mat-card>
+    <br>
+    <div class="flex-container">
+      <div class="flex-item left-column">
+    <div class="ruleta-container">
+      <div class="ruleta" [style.transform]="'rotate(' + rotacion() + 'deg)'">
+        <!--<div *ngFor="let nombre of nombres(); let i = index"
+             class="segment"
+             [style.transform]="'rotate(' + (i * (360 / nombres().length)) + 'deg)'">
+          <span class="segment-text">{{ nombre }}</span>
+        </div>-->
+      </div>
+    </div>
+    <div class="button-group">
+      <button mat-flat-button class="btn-big" (click)="girarRuleta()">Girar Ruleta</button>
+      <!--<button mat-raised-button color="accent" (click)="saltarNombre()">Saltar</button>-->
+      <button mat-stroked-button (click)="reiniciarLista()">Reiniciar</button>
+    </div>
+  </div>
+
+  <div class="flex-item right-column">
+    <h2>Participantes</h2>
+    <div *ngIf="nombres().length > 0; else noNames">
+      <mat-list>
+        <mat-list-item class="color-text" *ngFor="let name of nombres()">{{ name }}</mat-list-item>
+      </mat-list>
+    </div>
+
+    <ng-template #noNames>
+      <p class="color-text">No hay nombres disponibles.</p>
+    </ng-template>
+
+  </div>
+
+  </div>
+    <br>
+  </mat-card>
+
+  <br><br>
+  <mat-card *ngIf="nombreSeleccionado()" class="resultado">
+    <mat-card-title>Nombre Seleccionado:</mat-card-title>
+    <mat-card-content class="slot-machine">
+      <span *ngFor="let letra of nombreAnimado()" class="letter">{{ letra }}</span>
+    </mat-card-content>
+  </mat-card>
+  <br><br>
+
+  <mat-card>
+    <mat-table [dataSource]="historial()" class="historial">
+      <ng-container matColumnDef="nombre">
+        <mat-header-cell *matHeaderCellDef> Nombre </mat-header-cell>
+        <mat-cell *matCellDef="let item"> {{ item.nombre }} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="fecha">
+        <mat-header-cell *matHeaderCellDef> Fecha </mat-header-cell>
+        <mat-cell *matCellDef="let item"> {{ item.fecha }} </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="['nombre', 'fecha']"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: ['nombre', 'fecha']"></mat-row>
+    </mat-table>
+  </mat-card>
+</div>
+
+
