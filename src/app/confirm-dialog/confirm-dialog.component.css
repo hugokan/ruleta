@@ -4,11 +4,22 @@
 }
 
 .boton-2 {
-  color: #191c1c;
-  background-color: #ccc;
+  color: #ccc;
+  background-color: #191c1c;
 }
 
 .boton-1 {
   color: white;
   background-color: #ff5733;
+}
+
+button:hover {
+  background-color: #ccc;
+  color: #ff5733 !important;
+}
+
+button:disabled {
+  background-color: #ccc;
+  color: #191c1c;
+  cursor: not-allowed;
 }

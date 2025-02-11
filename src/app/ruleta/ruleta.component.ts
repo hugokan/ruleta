@@ -44,7 +44,7 @@ export class RuletaComponent {
   colores = ['#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFC300', '#800080', '#008080', '#FF4500', '#00CED1', '#FFD700'];
   rotacion = signal<number>(0);
   showNames: boolean = true;
-  latestRecord: any;
+  isDisabled = false;
 
   constructor(private http: HttpClient, public dialog: MatDialog) {
     this.cargarHistorial();
@@ -58,6 +58,12 @@ export class RuletaComponent {
   }
 
   girarRuleta() {
+    this.isDisabled = true; // Desactivar el botón
+
+    setTimeout(() => {
+      this.isDisabled = false; // Reactivar después de 1 minuto
+    }, 60000); // 60000 ms = 1 minuto
+
     /*if (this.nombres().length === 0) {
       alert('Todos los nombres han sido seleccionados. Reinicia la lista.');
       return;
@@ -72,7 +78,7 @@ export class RuletaComponent {
     if (this.nombres().length === 0) return;
     this.girando.set(true);
     const randomIndex = Math.floor(Math.random() * this.nombres().length);
-    this.rotacion.set(360 * 5 + (randomIndex * (360 / this.nombres().length)));
+    this.rotacion.set(360 * 5 + (randomIndex * (360 * this.nombres().length)));
 
     setTimeout(() => {
       const nombre = this.nombres()[randomIndex];
@@ -124,7 +130,7 @@ export class RuletaComponent {
       if (result) {
     this.deleteLatestRecord().subscribe(
       () => console.log('Último registro eliminado con éxito'),
-      (error) => console.error('Error eliminando el registro:', error)
+      (error) => console.error('Error eliminando el registro', error)
     );
     this.girarRuleta();
   }

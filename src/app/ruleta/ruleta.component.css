@@ -92,6 +92,15 @@
   background-color: #ff5733 !important;
   color: white !important;
 }
+.btn-big:hover {
+  background-color: #ccc !important;
+  color: #ff5733 !important;
+}
+.btn-big:disabled {
+  background-color: #ccc !important;
+  color: #191c1c !important;
+  cursor: not-allowed !important;
+}
 .resultado {
   margin-top: 20px;
   text-align: center;
@@ -133,4 +142,15 @@
   .right-column {
     flex: 3;  /* 30% del contenedor */
   }
+}
+
+button:hover {
+  background-color: #ccc;
+  color: #ff5733 !important;
+}
+
+button:disabled {
+  background-color: #ccc;
+  color: #191c1c;
+  cursor: not-allowed;
 }
