@@ -1,4 +1,4 @@
-import { Component, Signal, signal } from '@angular/core';
+import { Component, Signal, computed, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
@@ -36,7 +36,7 @@ import { Observable, switchMap } from 'rxjs';
 export class RuletaComponent {
   nombres = signal<string[]>([]);
   historial = signal<{ nombre: string; fecha: string }[]>([]);
-  nombreSeleccionado = signal<string | null>(null);
+  nombreSeleccionado = signal<string[]>([]);
   nombreAnimado = signal<string[]>([]);
   girando = signal<boolean>(false);
   apiNombresUrl = 'https://reservapp.pockethost.io/api/collections/listaruleta/records';
@@ -45,10 +45,12 @@ export class RuletaComponent {
   rotacion = signal<number>(0);
   showNames: boolean = true;
   isDisabled = false;
+  totalItems = signal<number>(0);
 
   constructor(private http: HttpClient, public dialog: MatDialog) {
     this.cargarHistorial();
     this.obtenerNombres();
+    this.cargarRegistros();
   }
 
   obtenerNombres() {
@@ -62,19 +64,8 @@ export class RuletaComponent {
 
     setTimeout(() => {
       this.isDisabled = false; // Reactivar después de 1 minuto
-    }, 60000); // 60000 ms = 1 minuto
+    }, 30000); // 60000 ms = 1 minuto
 
-    /*if (this.nombres().length === 0) {
-      alert('Todos los nombres han sido seleccionados. Reinicia la lista.');
-      return;
-    }
-
-    this.girando.set(true);
-    const vueltas = 5 + Math.floor(Math.random() * 5); // Entre 5 y 10 vueltas completas
-    const randomIndex = Math.floor(Math.random() * this.nombres().length);
-    const anguloPorNombre = 360 / this.nombres().length;
-    const nuevoAngulo = vueltas * 360 + randomIndex * anguloPorNombre;
-    this.rotacion.set(nuevoAngulo);*/
     if (this.nombres().length === 0) return;
     this.girando.set(true);
     const randomIndex = Math.floor(Math.random() * this.nombres().length);
@@ -82,17 +73,19 @@ export class RuletaComponent {
 
     setTimeout(() => {
       const nombre = this.nombres()[randomIndex];
-      this.nombreSeleccionado.set(nombre);
+      this.nombreSeleccionado.set([nombre]);
       this.nombres.set(this.nombres().filter(n => n !== nombre));
       this.historial.set([...this.historial(), { nombre, fecha: new Date().toLocaleString() }]);
       this.animarNombre(nombre);
       this.girando.set(false);
       this.guardarHistorial();
+      this.cargarRegistros();
     }, 3000);
   }
 
   registrarHistorial(nombre: string) {
     const registro = { nombre, fecha: new Date().toISOString() };
+    //console.log({registro})
     this.http.post(this.apiHistorialUrl, registro).subscribe();
   }
 
@@ -154,11 +147,19 @@ this.obtenerNombres();
             this.obtenerNombres();
             //this.nombres.set(['Juan', 'Maria', 'Luis', 'Ana', 'Carlos', 'Sofia', 'Pedro', 'Elena', 'Diego', 'Marta']);
             this.historial.set([]);
-            this.nombreSeleccionado.set(null);
+            this.nombreSeleccionado.set([]);
           });
         });
       }
     });
+  }
+
+  cargarRegistros() {
+    this.http.get<any>(this.apiHistorialUrl)
+      .subscribe(response => {
+        //console.log('Total de elementos:', response.totalItems);
+        this.totalItems.set(response.totalItems);
+      });
   }
 
   cargarHistorial() {
@@ -171,7 +172,7 @@ this.obtenerNombres();
     if (!nuevoRegistro) return;
 
     this.http.post(this.apiHistorialUrl, nuevoRegistro).subscribe(
-      response => console.log('Registro guardado:'),
+      response => console.log('Registro guardado'),
       error => console.error('Error al guardar:', error)
     );
   }

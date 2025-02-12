@@ -25,9 +25,9 @@
       </div>
     </div>
     <div class="button-group">
-      <button mat-flat-button class="btn-big" (click)="girarRuleta()" [disabled]="isDisabled">Girar Ruleta</button>
+      <button mat-flat-button class="btn-big" (click)="girarRuleta()" [disabled]="isDisabled" [disabled]="nombreSeleccionado().length == 10">Girar Ruleta</button>
       <!--<button mat-raised-button color="accent" (click)="saltarNombre()">Saltar</button>-->
-      <button mat-stroked-button (click)="reiniciarLista()">Reiniciar</button>
+      <button *ngIf="totalItems() >= 10" mat-stroked-button (click)="reiniciarLista()">Reiniciar</button>
     </div>
   </div>
 
