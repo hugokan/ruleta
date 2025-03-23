@@ -9,6 +9,8 @@ import { MatTableModule } from '@angular/material/table';
 import { MatList, MatListItem } from '@angular/material/list';
 import { trigger, style, animate, transition } from '@angular/animations';
 import { Observable, switchMap } from 'rxjs';
+import { ApexChartComponent } from "../apex-chart/apex-chart.component";
+import { TreeViewComponent } from "../tree-view/tree-view.component";
 
 @Component({
   selector: 'app-ruleta',
@@ -20,8 +22,10 @@ import { Observable, switchMap } from 'rxjs';
     MatCardModule,
     MatTableModule,
     MatList,
-    MatListItem
-  ],
+    MatListItem,
+    ApexChartComponent,
+    TreeViewComponent
+],
   templateUrl: './ruleta.component.html',
   styleUrls: ['./ruleta.component.css'],
   animations: [
@@ -47,10 +51,83 @@ export class RuletaComponent {
   isDisabled = false;
   totalItems = signal<number>(0);
 
+  nombres2: string[] = [];  // Lista de nombres originales
+  historial2: string[] = []; // Lista de nombres ya seleccionados
+  nombreSeleccionado2: string | null = null; // Nombre que se mostrará
+
+  // para probar el tree
+  miObjeto = [{
+    services: { web: "Hosting", cloud: "AWS" },
+    users: { admin: "Juan", guest: "Ana" },
+    products: {errors: "Laptop", apa2: "Smartphone"}
+  }];
+
+  treeNode3 = {
+    services: [
+      {
+        id: 15365,
+        metrics: {
+          requests: 11588885,
+          failedRequests: 155491,
+          hiddenErrors: 78971,
+          responseTime: 37.15298831595965
+        },
+        errors: {
+          propagated: [
+            { count: 78194, categoryId: 'DEVELOPMENT' },
+            { count: 318, categoryId: 'CONFIGURATION' },
+            { count: 76974, categoryId: 'UNAVAILABILITY' },
+            { count: 1, categoryId: 'NOERROR' },
+            { count: 4, categoryId: 'UNCLASSIFIED' }
+          ],
+          hidden: [
+            { count: 2754, categoryId: 'UNAVAILABILITY' },
+            { count: 76214, categoryId: 'NOERROR' },
+            { count: 3, categoryId: 'UNCLASSIFIED' }
+          ]
+        },
+        description: 'Gestión de avisos',
+        name: 'GAVI0001'
+      },
+      {
+        id: 18778,
+        metrics: { requests: 2, failedRequests: 0, hiddenErrors: 0, responseTime: 215.5 },
+        errors: { propagated: [], hidden: [] },
+        description: 'Gestión tipos de avisos',
+        name: 'XV26T00A'
+      }
+    ],
+    tasks: []
+  };
+
+  data = {
+    services: [
+    { name: 'Servicios', value: 10 },
+    { name: 'Errores', value: 5 }
+  ],
+  tasks: []
+
+};
+
+  jsonData = {
+    name: "Producto A",
+    price: 20,
+    details: {
+      manufacturer: "Empresa X",
+      category: "Electrónica",
+      specs: {
+        weight: "1.2kg",
+        dimensions: "10x20x30cm"
+      }
+    }
+  };
+
   constructor(private http: HttpClient, public dialog: MatDialog) {
     this.cargarHistorial();
     this.obtenerNombres();
     this.cargarRegistros();
+    this.cargarDatos();
+    this.seleccionarNombre()
   }
 
   obtenerNombres() {
@@ -59,12 +136,47 @@ export class RuletaComponent {
     });
   }
 
+  // Carga los datos de los dos endpoints
+  cargarDatos() {
+    this.http.get<any>(this.apiNombresUrl).subscribe(nombresData => {
+      this.nombres2 = nombresData.items.map((item: any) => item.nombre); // Extraer nombres
+      console.log("Lista completa de nombres:", this.nombres2);
+      this.http.get<any>(this.apiHistorialUrl).subscribe(historialData => {
+        this.historial2 = historialData.items.map((item: any) => item.nombre); // Extraer historial
+        console.log("Historial de nombres:", this.historial2);
+        const nombresDisponibles = this.nombres2.filter(nombre => !this.historial2.includes(nombre));
+        console.log(nombresDisponibles);
+      });
+    });
+  }
+
+  // Escoge un nombre aleatorio excluyendo los que ya han salido
+  seleccionarNombre2() {
+    const nombresDisponibles = this.nombres2.filter(nombre => !this.historial2.includes(nombre));
+    console.log(nombresDisponibles);
+
+    if (nombresDisponibles.length === 0) {
+      this.nombreSeleccionado2 = "Todos los nombres han salido";
+      return;
+    }
+
+    const indiceAleatorio = Math.floor(Math.random() * nombresDisponibles.length);
+    this.nombreSeleccionado2 = nombresDisponibles[indiceAleatorio];
+
+    // Guardar el nombre en el historial automáticamente
+    this.guardarEnHistorial(this.nombreSeleccionado2);
+  }
+
+
+
+
+
   girarRuleta() {
     this.isDisabled = true; // Desactivar el botón
 
     setTimeout(() => {
       this.isDisabled = false; // Reactivar después de 1 minuto
-    }, 30000); // 60000 ms = 1 minuto
+    }, 15000); // 60000 ms = 1 minuto
 
     if (this.nombres().length === 0) return;
     this.girando.set(true);
@@ -72,7 +184,7 @@ export class RuletaComponent {
     this.rotacion.set(360 * 5 + (randomIndex * (360 * this.nombres().length)));
 
     setTimeout(() => {
-      const nombre = this.nombres()[randomIndex];
+      const nombre = this.seleccionarNombre();
       this.nombreSeleccionado.set([nombre]);
       this.nombres.set(this.nombres().filter(n => n !== nombre));
       this.historial.set([...this.historial(), { nombre, fecha: new Date().toLocaleString() }]);
@@ -87,6 +199,25 @@ export class RuletaComponent {
     const registro = { nombre, fecha: new Date().toISOString() };
     //console.log({registro})
     this.http.post(this.apiHistorialUrl, registro).subscribe();
+  }
+
+  // Guarda el nombre seleccionado en el historial
+  guardarEnHistorial(nombre: string) {
+    const nuevoRegistro = { nombre, fecha: new Date().toISOString() };
+
+    this.http.post(this.apiHistorialUrl, nuevoRegistro).subscribe(() => {
+      this.historial2.push(nombre); // Actualiza la lista en la aplicación
+    });
+  }
+
+  // Escoge un nombre aleatorio excluyendo los que ya han salido
+  seleccionarNombre() {
+    const nombresDisponibles = this.nombres().filter(nombre => !this.historial().some(item => item.nombre === nombre));
+    if (nombresDisponibles.length === 0) {
+      return "Todos los nombres han salido";
+    }
+    const indiceAleatorio = Math.floor(Math.random() * nombresDisponibles.length);
+    return nombresDisponibles[indiceAleatorio];
   }
 
   animarNombre(nombre: string) {
