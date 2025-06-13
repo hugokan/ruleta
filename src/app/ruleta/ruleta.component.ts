@@ -62,9 +62,7 @@ export class RuletaComponent {
   participantesRestantes = computed(() => {
     const todos = this.nombres();
     const yaSalieron = this.historial().map(item => item.nombre);
-    let daton = todos.filter(nombre => !yaSalieron.includes(nombre));
-    console.log(daton.length);
-    return daton;
+    return todos.filter(nombre => !yaSalieron.includes(nombre));;
   });
 
   girarRuleta() {
