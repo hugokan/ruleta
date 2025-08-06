@@ -96,6 +96,27 @@ export class RuletaComponent {
     }, 3000);
   }
 
+  girarRuletaAleatoria() {
+    
+    this.isDisabled.set(true);
+    this.girando.set(true);
+
+    const nombresDisponibles = this.nombres();
+
+    const randomIndex = Math.floor(Math.random() * (nombresDisponibles.length + 150));
+    
+    this.rotacion.set(360 * 5 + (randomIndex * (360 / nombresDisponibles.length)));
+
+    setTimeout(() => {
+      const indiceAleatorio = Math.floor(Math.random() * this.nombres().length);
+      const nombre = nombresDisponibles[indiceAleatorio];
+      this.nombreSeleccionado.set([nombre]);
+      this.animarNombre(nombre);
+      this.girando.set(false);
+      this.isDisabled.set(false);
+    }, 3000);
+  }
+
   animarNombre(nombre: string) {
     this.nombreAnimado.set(Array(nombre.length).fill('?'));
     nombre.split('').forEach((letra, i) => {

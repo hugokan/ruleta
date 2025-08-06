@@ -1,6 +1,6 @@
 <div class="container">
   <br>
-  <h1 class="color-text"><b>Ruleta aleatoria</b></h1>
+  <h1 class="color-text"><b>Ruleta Equipo HARA</b></h1>
 
   <mat-card *ngIf="nombreSeleccionado()" class="resultado">
     <mat-card-title>Nombre Seleccionado:</mat-card-title>
@@ -20,9 +20,10 @@
       </div>
     </div>
     <div class="button-group">
-      <button mat-flat-button class="btn-big" (click)="girarRuleta()" [disabled]="isDisabled()" [disabled]="participantesRestantes().length === 0">Girar Ruleta</button>
-      <button mat-raised-button color="accent" (click)="saltarNombre()">Saltar</button>
+      <button mat-flat-button class="btn-big" (click)="girarRuleta()" [disabled]="isDisabled()" [disabled]="participantesRestantes().length === 0">Ruleta daily</button>
+      <button mat-raised-button color="accent" (click)="saltarNombre()">Saltar nombre</button>
       <button *ngIf="participantesRestantes().length === 0" mat-stroked-button (click)="reiniciarLista()">Reiniciar</button>
+      <button mat-stroked-button (click)="girarRuletaAleatoria()">Persona aleatoria</button>
     </div>
   </div>
 
